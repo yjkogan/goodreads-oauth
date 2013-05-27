@@ -53,8 +53,8 @@
 		E76CB5BE1753293C00CE9AFE /* GROMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GROMainViewController.h; sourceTree = "<group>"; };
 		E76CB5BF1753293C00CE9AFE /* GROMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GROMainViewController.m; sourceTree = "<group>"; };
 		E76CB5C01753293C00CE9AFE /* GROMainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GROMainViewController.xib; sourceTree = "<group>"; };
-		E76CB5C617532EFC00CE9AFE /* GROAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GROAuth.h; sourceTree = "<group>"; };
-		E76CB5C717532EFC00CE9AFE /* GROAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GROAuth.m; sourceTree = "<group>"; };
+		E76CB5C617532EFC00CE9AFE /* GROAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GROAuth.h; path = ../../../GROAuth.h; sourceTree = "<group>"; };
+		E76CB5C717532EFC00CE9AFE /* GROAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GROAuth.m; path = ../../../GROAuth.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
