@@ -40,7 +40,21 @@
 
 - (IBAction)loginBtnTapped:(id)sender {
 
-    [GROAuth loginWithGoodreadsWithCallbackURL:nil completion:nil];
+    [GROAuth loginWithGoodreadsWithCompletion:^(NSDictionary *authParams, NSError *error) {
+        if (error) {
+            NSLog(@"Error logging in: %@", error);
+        } else {
+//            NSURLRequest *username = [GROAuth goodreadsRequestForOAuthPath:@"api/auth_user" parameters:nil HTTPmethod:@"GET"];
+//            NSHTTPURLResponse* urlResponse = nil;
+//            NSError *urlError = [[NSError alloc] init];
+//            NSData *responseData = [NSURLConnection sendSynchronousRequest:username returningResponse:&urlResponse error:&urlError];
+//            NSString *result = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+//            NSLog(@"result: %@", result);
+            NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"20732743",@"id",[GROAuth consumerKey],@"key", nil];
+            NSString *result = [GROAuth XMLResponseForNonOAuthPath:@"user/show" parameters:parameters];
+            NSLog(@"result: %@", result);
+        }
+    }];
     
 }
 @end

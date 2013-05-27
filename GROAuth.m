@@ -8,13 +8,29 @@
 
 #import "GROAuth.h"
 #import "OAuth1Controller.h"
+#import "XMLDictionary.h"
 
 #define kGROAuthDefaults @"GROAuthDefaults"
 #define kGROAuthConsumerKey @"consumerKey"
 #define kGROAuthConsumerSecret @"consumerSecret"
 #define kGROAuthAccessToken @"accessToken"
+#define kGROAuthAccessTokenSecret @"accessTokenSecret"
+
+#define API_URL @"http://www.goodreads.com/"
 
 @implementation GROAuth
+
++ (NSString *)consumerKey {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
+    return [GROAuthDefaults objectForKey:kGROAuthConsumerKey];
+}
+
++ (NSString *)consumerSecret {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
+    return [GROAuthDefaults objectForKey:kGROAuthConsumerSecret];
+}
 
 + (void)setGoodreadsOAuthWithConsumerKey:(NSString *)consumerKey secret:(NSString *)consumerSecret {
 
@@ -33,7 +49,7 @@
 
 + (void)loginWithGoodreadsWithCallbackURL:(NSString *)callbackURL completion:(void( ^ )(NSDictionary *authParams, NSError *error))completion {
     
-    static NSString *defaultCallbackURL = @"http://www.example.com";
+    static NSString *defaultCallbackURL = @"http://www.goodreads.com";
     
     // This varibale needs to be static and out here because otherwise it will go out of scope when the function returns
     // If that happens, then the compeltion blocks that need to be execute, which are related to this instance, will
@@ -53,48 +69,97 @@
     // done for them. Therefore, let's get the appDelegate's window and just animate our webView into it
     UIWindow *window = [appDelegate window];
     
-    UIWebView *loginWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0,
-                                                                          window.bounds.size.height,
-                                                                          window.bounds.size.width,
-                                                                          window.bounds.size.height)];
-    
+    UIWebView *loginWebView = [[UIWebView alloc] initWithFrame:window.bounds];
     [window addSubview:loginWebView];
     
     loginWebView.scalesPageToFit = YES;
     
-    [UIView animateWithDuration:1.0
-                    animations:^{
-                        loginWebView.frame = window.bounds;
-                  } completion:^(BOOL finished) {
+    oauth1Controller = [[OAuth1Controller alloc] init];
                       
-                      oauth1Controller = [[OAuth1Controller alloc] init];
-                      
-                      // Set consumerKey and consumerSecret to the values set earlier
-                      NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                      NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
-                      oauth1Controller.consumerKey = [GROAuthDefaults objectForKey:kGROAuthConsumerKey];
-                      oauth1Controller.consumerSecret = [GROAuthDefaults objectForKey:kGROAuthConsumerSecret];
-                      oauth1Controller.oauthCallback = callbackURL;
-                      
-                      // Now use the webView to log the user in
-                      [oauth1Controller loginWithWebView:loginWebView
-                                              completion:^(NSDictionary *oauthTokens, NSError *error) {
-                                                  
-                                                  // Save the access token so we can use it as a default later if we wish to
-                                                  // We need to make a mutable copy because all objects returned from
-                                                  // NSUserDefaults are immutable
-                                                  NSMutableDictionary *mutableGROAuthDefaults = [GROAuthDefaults mutableCopy];
-                                                  [mutableGROAuthDefaults setObject:[oauthTokens objectForKey:@"oauth_token"] forKey:kGROAuthAccessToken];
-                                                  [defaults setObject:mutableGROAuthDefaults forKey:kGROAuthDefaults];
-                                                  
-                                                  // Check that the block isn't nil since calling something on a nil C-like
-                                                  // object causes a crash
-                                                  if (completion != nil) {
-                                                      return completion(oauthTokens,error);
-                                                  }
-                                                  return;
-                                              }];
-                  }];
+    // Set consumerKey and consumerSecret to the values set earlier
+    oauth1Controller.consumerKey = [GROAuth consumerKey];
+    oauth1Controller.consumerSecret = [GROAuth consumerSecret];
+    oauth1Controller.oauthCallback = callbackURL;
+    
+    // Now use the webView to log the user in
+    [oauth1Controller loginWithWebView:loginWebView
+                            completion:^(NSDictionary *oauthTokens, NSError *error) {
+                                
+                                // Save the access tokens so we can use it as a default later if we wish to
+                                // We need to make a mutable copy because all objects returned from
+                                // NSUserDefaults are immutable
+                                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                                NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
+                                NSMutableDictionary *mutableGROAuthDefaults = [GROAuthDefaults mutableCopy];
+                                [mutableGROAuthDefaults setObject:[oauthTokens objectForKey:@"oauth_token"] forKey:kGROAuthAccessToken];
+                                [mutableGROAuthDefaults setObject:[oauthTokens objectForKey:@"oauth_token_secret"] forKey:kGROAuthAccessTokenSecret];
+                                [defaults setObject:mutableGROAuthDefaults forKey:kGROAuthDefaults];
+                                
+                                [loginWebView removeFromSuperview];
+                                // Check that the block isn't nil since calling
+                                // something on a nil C-like
+                                // object causes a crash
+                                if (completion != nil) {
+                                    return completion(oauthTokens,error);
+                                }
+                                return;
+                            }];
 }
 
++ (NSURLRequest *)goodreadsRequestForOAuthPath:(NSString *)path
+                               parameters:(NSDictionary *)parameters
+                               HTTPmethod:(NSString *)method {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
+    
+    return [GROAuth goodreadsRequestForOAuthPath:path parameters:parameters HTTPmethod:method oauthToken:[GROAuthDefaults objectForKey:kGROAuthAccessToken] oauthSecret:[GROAuthDefaults objectForKey:kGROAuthAccessTokenSecret]];
+}
+
++ (NSURLRequest *)goodreadsRequestForOAuthPath:(NSString *)path
+                               parameters:(NSDictionary *)parameters
+                               HTTPmethod:(NSString *)method
+                               oauthToken:(NSString *)oauth_token
+                              oauthSecret:(NSString *)oauth_token_secret {
+    OAuth1Controller *oauth1Controller = [[OAuth1Controller alloc] init];
+    
+    // Set consumerKey and consumerSecret to the values set earlier
+    oauth1Controller.consumerKey = [GROAuth consumerKey];
+    oauth1Controller.consumerSecret = [GROAuth consumerSecret];
+    
+    NSURLRequest *request = [oauth1Controller preparedRequestForPath:path parameters:parameters HTTPmethod:method oauthToken:oauth_token oauthSecret:oauth_token_secret];
+    return request;
+}
+
++ (NSString *)XMLResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters {
+    path = [NSString stringWithFormat:@"%@%@?", API_URL,path];
+    NSMutableString *url = [path mutableCopy];
+    for (NSString *key in [parameters allKeys]) {
+        NSString *param = [NSString stringWithFormat:@"&%@=%@",key,[parameters objectForKey:key]];
+        [url appendString:param];
+    }
+    return [GROAuth getDataFrom:url];
+}
+
++ (NSDictionary *)dictionaryResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters {
+    return [NSDictionary dictionaryWithXMLString:[GROAuth XMLResponseForNonOAuthPath:path parameters:parameters]];
+}
+
++ (NSString *)getDataFrom:(NSString *)url {
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setHTTPMethod:@"GET"];
+    
+    [request setURL:[NSURL URLWithString:url]];
+    
+    NSError *error = [[NSError alloc] init];
+    NSHTTPURLResponse *responseCode = nil;
+    
+    NSData *oResponseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseCode error:&error];
+    
+    if([responseCode statusCode] != 200){
+        NSLog(@"Error getting %@, HTTP status code %i", url, [responseCode statusCode]);
+        return nil;
+    }
+    
+    return [[NSString alloc] initWithData:oResponseData encoding:NSUTF8StringEncoding];
+}
 @end

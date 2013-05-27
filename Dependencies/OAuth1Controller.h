@@ -8,11 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
+@class OAuth1Controller;
+
+@protocol OAuth1ControllerDelegate <NSObject>
+
+- (void)startedLoadingRequest:(NSURLRequest *)request oauth1Controller:(OAuth1Controller *)controller;
+
+@end
+
 @interface OAuth1Controller : NSObject <UIWebViewDelegate>
 
 @property (nonatomic, strong) NSString *consumerKey;
 @property (nonatomic, strong) NSString *consumerSecret;
 @property (nonatomic, strong) NSString *oauthCallback;
+@property (nonatomic, weak) id<OAuth1ControllerDelegate> controllerDelegate;
 
 - (void)loginWithWebView:(UIWebView *)webWiew
               completion:(void (^)(NSDictionary *oauthTokens, NSError *error))completion;

@@ -18,7 +18,7 @@ typedef void (^WebWiewDelegateHandler)(NSDictionary *oauthParams);
 #define REQUEST_TOKEN_URL    @"request_token"
 #define AUTHENTICATE_URL     @"authorize"
 #define ACCESS_TOKEN_URL     @"access_token"
-#define API_URL              @"http://www.goodreads.com/api/"
+#define API_URL              @"http://www.goodreads.com/"
 #define OAUTH_SCOPE_PARAM    @""
 #define URL_SUFFIX           @""
 
@@ -267,8 +267,8 @@ static inline NSDictionary *CHParametersFromQueryString(NSString *queryString)
     [request setValue:[NSString stringWithFormat:@"%@/%@ (%@; iOS %@; Scale/%0.2f)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleExecutableKey] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], (__bridge id)CFBundleGetValueForInfoDictionaryKey(CFBundleGetMainBundle(), kCFBundleVersionKey) ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion], ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0f)] forHTTPHeaderField:@"User-Agent"];
     
     _delegateHandler = ^(NSDictionary *oauthParams) {
-        if (oauthParams[@"oauth_verifier"] == nil) {
-            NSError *authenticateError = [NSError errorWithDomain:@"com.ideaflasher.oauth.authenticate" code:0 userInfo:@{@"userInfo" : @"oauth_verifier not received and/or user denied access"}];
+        if (oauthParams[@"oauth_token"] == nil) {
+            NSError *authenticateError = [NSError errorWithDomain:@"com.ideaflasher.oauth.authenticate" code:0 userInfo:@{@"userInfo" : @"oauth_token not received and/or user denied access"}];
             completion(authenticateError, oauthParams);
         } else {
             completion(nil, oauthParams);
@@ -290,11 +290,14 @@ static inline NSDictionary *CHParametersFromQueryString(NSString *queryString)
 #pragma mark Used to detect call back in step 2
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    // Added this delegate call so that we can (maybe) gracefully handle if the user is already signed in
+    // --Yonatan Kogan 5/27/2013
+    [self.controllerDelegate startedLoadingRequest:request oauth1Controller:self];
     if (_delegateHandler) {
         // For other Oauth 1.0a service providers than LinkedIn, the call back URL might be part of the query of the URL (after the "?"). In this case use index 1 below. In any case NSLog the request URL after the user taps 'Allow'/'Authenticate' after he/she entered his/her username and password and see where in the URL the call back is. Note for some services the callback URL is set once on their website when registering an app, and the self.oauthCallback set here is ignored.
         NSString *urlWithoutQueryString = [request.URL.absoluteString componentsSeparatedByString:@"?"][0];
         if (!self.oauthCallback) {
-            return NO;
+            return YES;
         }
         if ([urlWithoutQueryString rangeOfString:self.oauthCallback].location != NSNotFound)
         {

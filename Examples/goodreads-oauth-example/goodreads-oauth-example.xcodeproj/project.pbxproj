@@ -24,6 +24,7 @@
 		E76CB5C11753293C00CE9AFE /* GROMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76CB5BF1753293C00CE9AFE /* GROMainViewController.m */; };
 		E76CB5C21753293C00CE9AFE /* GROMainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E76CB5C01753293C00CE9AFE /* GROMainViewController.xib */; };
 		E76CB5C817532EFC00CE9AFE /* GROAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = E76CB5C717532EFC00CE9AFE /* GROAuth.m */; };
+		E7E935511753606800F73241 /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E935501753606800F73241 /* XMLDictionary.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,8 @@
 		E76CB5C01753293C00CE9AFE /* GROMainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GROMainViewController.xib; sourceTree = "<group>"; };
 		E76CB5C617532EFC00CE9AFE /* GROAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GROAuth.h; path = ../../../GROAuth.h; sourceTree = "<group>"; };
 		E76CB5C717532EFC00CE9AFE /* GROAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GROAuth.m; path = ../../../GROAuth.m; sourceTree = "<group>"; };
+		E7E9354F1753606800F73241 /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
+		E7E935501753606800F73241 /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +134,8 @@
 		E76CB5A7175309C500CE9AFE /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				E7E9354F1753606800F73241 /* XMLDictionary.h */,
+				E7E935501753606800F73241 /* XMLDictionary.m */,
 				E76CB5A8175309C500CE9AFE /* NSString+URLEncoding.h */,
 				E76CB5A9175309C500CE9AFE /* NSString+URLEncoding.m */,
 				E76CB5AA175309C500CE9AFE /* OAuth1Controller.h */,
@@ -230,6 +235,7 @@
 				E76CB5BA17530A7400CE9AFE /* sha1.c in Sources */,
 				E76CB5C11753293C00CE9AFE /* GROMainViewController.m in Sources */,
 				E76CB5C817532EFC00CE9AFE /* GROAuth.m in Sources */,
+				E7E935511753606800F73241 /* XMLDictionary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

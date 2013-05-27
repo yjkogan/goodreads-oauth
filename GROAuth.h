@@ -10,6 +10,9 @@
 
 @interface GROAuth : NSObject
 
++ (NSString *)consumerKey;
++ (NSString *)consumerSecret;
+
 + (void)setGoodreadsOAuthWithConsumerKey:(NSString *)consumerKey secret:(NSString *)consumerSecret;
 
 + (void)loginWithGoodreadsWithCompletion:(void( ^ )(NSDictionary *authParams, NSError *error))completion;
@@ -17,33 +20,37 @@
 + (void)loginWithGoodreadsWithCallbackURL:(NSString *)callbackURL
                            completion:(void( ^ )(NSDictionary *authParams, NSError *error))completion;
 
-+ (NSURLRequest *)goodreadsRequestForPath:(NSString *)path
++ (NSURLRequest *)goodreadsRequestForOAuthPath:(NSString *)path
                                parameters:(NSDictionary *)parameters
                                HTTPmethod:(NSString *)method;
 
-+ (NSURLRequest *)goodreadsRequestForPath:(NSString *)path
++ (NSURLRequest *)goodreadsRequestForOAuthPath:(NSString *)path
                                parameters:(NSDictionary *)parameters
                                HTTPmethod:(NSString *)method
                                oauthToken:(NSString *)oauth_token
                               oauthSecret:(NSString *)oauth_token_secret;
 
-+ (NSString *)XMLResponseForPath:(NSString *)path
-                      parameters:(NSDictionary *)parameters
-                      HTTPmethod:(NSString *)method;
++ (NSString *)XMLResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters;
 
-+ (NSString *)XMLResponseForPath:(NSString *)path
-                      parameters:(NSDictionary *)parameters
-                      HTTPmethod:(NSString *)method
-                      oauthToken:(NSString *)oauth_token
-                     oauthSecret:(NSString *)oauth_token_secret;
++ (NSDictionary *)dictionaryResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters;
 
-+ (NSDictionary *)dictionaryResponseForPath:(NSString *)path
-                                 parameters:(NSDictionary *)parameters
-                                 HTTPmethod:(NSString *)method;
-
-+ (NSDictionary *)dictionaryResponseForPath:(NSString *)path
-                                 parameters:(NSDictionary *)parameters
-                                 HTTPmethod:(NSString *)method
-                                 oauthToken:(NSString *)oauth_token
-                                oauthSecret:(NSString *)oauth_token_secret;
+//+ (NSString *)XMLResponseForOAuthPath:(NSString *)path
+//                      parameters:(NSDictionary *)parameters
+//                      HTTPmethod:(NSString *)method;
+//
+//+ (NSString *)XMLResponseForOAuthPath:(NSString *)path
+//                      parameters:(NSDictionary *)parameters
+//                      HTTPmethod:(NSString *)method
+//                      oauthToken:(NSString *)oauth_token
+//                     oauthSecret:(NSString *)oauth_token_secret;
+//
+//+ (NSDictionary *)dictionaryResponseForOAuthPath:(NSString *)path
+//                                 parameters:(NSDictionary *)parameters
+//                                 HTTPmethod:(NSString *)method;
+//
+//+ (NSDictionary *)dictionaryResponseForOAuthPath:(NSString *)path
+//                                 parameters:(NSDictionary *)parameters
+//                                 HTTPmethod:(NSString *)method
+//                                 oauthToken:(NSString *)oauth_token
+//                                oauthSecret:(NSString *)oauth_token_secret;
 @end
