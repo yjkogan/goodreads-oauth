@@ -15,7 +15,7 @@ The underlying OAuth library is that of Christian Hansen and is available at <ht
 4. Optionally (but recommended), you can choose to "Copy items to destination group's folder (if needed)".
 5. Click "Finish"
 
-##Installation using Cocopods
+##Installation using Cocoapods
 ####Coming Soon!
 
 #Usage
