@@ -9,13 +9,14 @@
 #import "GROAppDelegate.h"
 #import "GROAuth.h"
 #import "GROMainViewController.h"
+#import "apiKeys.h"
 
 @implementation GROAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [GROAuth setGoodreadsOAuthWithConsumerKey:@"WRXqU6cCaApGQMXVZZtfrw"
-                                       secret:@"29u9ztldefAWW6mFVZaP1CYO7gYiaK2XoBlY6ic49I"];
+    [GROAuth setGoodreadsOAuthWithConsumerKey:GOODREADS_CONSUMER_KEY
+                                       secret:GOODREADS_CONSUMER_SECRET];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.

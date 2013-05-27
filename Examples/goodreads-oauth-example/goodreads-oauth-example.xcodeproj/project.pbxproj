@@ -28,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E707D1A11754270300E3433C /* apiKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = apiKeys.h; sourceTree = "<group>"; };
 		E76CB587175309B500CE9AFE /* goodreads-oauth-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "goodreads-oauth-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76CB58A175309B500CE9AFE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E76CB58C175309B500CE9AFE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -120,6 +121,7 @@
 		E76CB591175309B500CE9AFE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E707D1A11754270300E3433C /* apiKeys.h */,
 				E76CB592175309B500CE9AFE /* goodreads-oauth-example-Info.plist */,
 				E76CB593175309B500CE9AFE /* InfoPlist.strings */,
 				E76CB596175309B500CE9AFE /* main.m */,
