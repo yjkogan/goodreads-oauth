@@ -11,6 +11,7 @@
 @interface GROAuth : NSObject
 
 + (NSString *)consumerKey;
+
 + (NSString *)consumerSecret;
 
 + (void)setGoodreadsOAuthWithConsumerKey:(NSString *)consumerKey secret:(NSString *)consumerSecret;
@@ -34,23 +35,23 @@
 
 + (NSDictionary *)dictionaryResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters;
 
-//+ (NSString *)XMLResponseForOAuthPath:(NSString *)path
-//                      parameters:(NSDictionary *)parameters
-//                      HTTPmethod:(NSString *)method;
-//
-//+ (NSString *)XMLResponseForOAuthPath:(NSString *)path
-//                      parameters:(NSDictionary *)parameters
-//                      HTTPmethod:(NSString *)method
-//                      oauthToken:(NSString *)oauth_token
-//                     oauthSecret:(NSString *)oauth_token_secret;
-//
-//+ (NSDictionary *)dictionaryResponseForOAuthPath:(NSString *)path
-//                                 parameters:(NSDictionary *)parameters
-//                                 HTTPmethod:(NSString *)method;
-//
-//+ (NSDictionary *)dictionaryResponseForOAuthPath:(NSString *)path
-//                                 parameters:(NSDictionary *)parameters
-//                                 HTTPmethod:(NSString *)method
-//                                 oauthToken:(NSString *)oauth_token
-//                                oauthSecret:(NSString *)oauth_token_secret;
++ (NSString *)XMLResponseForOAuthPath:(NSString *)path
+                      parameters:(NSDictionary *)parameters
+                      HTTPmethod:(NSString *)method;
+
++ (NSString *)XMLResponseForOAuthPath:(NSString *)path
+                      parameters:(NSDictionary *)parameters
+                      HTTPmethod:(NSString *)method
+                      oauthToken:(NSString *)oauth_token
+                     oauthSecret:(NSString *)oauth_token_secret;
+
++ (NSDictionary *)dictionaryResponseForOAuthPath:(NSString *)path
+                                 parameters:(NSDictionary *)parameters
+                                 HTTPmethod:(NSString *)method;
+
++ (NSDictionary *)dictionaryResponseForOAuthPath:(NSString *)path
+                                 parameters:(NSDictionary *)parameters
+                                 HTTPmethod:(NSString *)method
+                                 oauthToken:(NSString *)oauth_token
+                                oauthSecret:(NSString *)oauth_token_secret;
 @end

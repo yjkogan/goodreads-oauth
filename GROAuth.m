@@ -21,12 +21,14 @@
 @implementation GROAuth
 
 + (NSString *)consumerKey {
+    // Convenience method for getting the stored consumer key
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
     return [GROAuthDefaults objectForKey:kGROAuthConsumerKey];
 }
 
 + (NSString *)consumerSecret {
+    // Convenience method for getting the stored consumer secret
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
     return [GROAuthDefaults objectForKey:kGROAuthConsumerSecret];
@@ -34,16 +36,19 @@
 
 + (void)setGoodreadsOAuthWithConsumerKey:(NSString *)consumerKey secret:(NSString *)consumerSecret {
 
+    // Store the consumer key and consumer secret
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSDictionary *goodreadsOAuthDefaults = [NSDictionary dictionaryWithObjectsAndKeys:consumerKey, kGROAuthConsumerKey,consumerSecret, kGROAuthConsumerSecret, nil];
     
     [defaults setObject:goodreadsOAuthDefaults forKey:kGROAuthDefaults];
     
+    // For good measure
     [defaults synchronize];
 }
 
 + (void)loginWithGoodreadsWithCompletion:(void( ^ )(NSDictionary *authParams, NSError *error))completion {
+    // Just pass this on with no callback
     [GROAuth loginWithGoodreadsWithCallbackURL:nil completion:completion];
 }
 
@@ -109,9 +114,11 @@
 + (NSURLRequest *)goodreadsRequestForOAuthPath:(NSString *)path
                                parameters:(NSDictionary *)parameters
                                HTTPmethod:(NSString *)method {
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
     
+    // Pass this on with the stored access token and secret
     return [GROAuth goodreadsRequestForOAuthPath:path parameters:parameters HTTPmethod:method oauthToken:[GROAuthDefaults objectForKey:kGROAuthAccessToken] oauthSecret:[GROAuthDefaults objectForKey:kGROAuthAccessTokenSecret]];
 }
 
@@ -120,6 +127,7 @@
                                HTTPmethod:(NSString *)method
                                oauthToken:(NSString *)oauth_token
                               oauthSecret:(NSString *)oauth_token_secret {
+    
     OAuth1Controller *oauth1Controller = [[OAuth1Controller alloc] init];
     
     // Set consumerKey and consumerSecret to the values set earlier
@@ -130,33 +138,86 @@
     return request;
 }
 
++ (NSString *)XMLResponseForOAuthPath:(NSString *)path
+                           parameters:(NSDictionary *)parameters
+                           HTTPmethod:(NSString *)method {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
+    
+    // Pass this on with the stored access token and secret
+    return [GROAuth XMLResponseForOAuthPath:path parameters:parameters HTTPmethod:method oauthToken:[GROAuthDefaults objectForKey:kGROAuthAccessToken] oauthSecret:[GROAuthDefaults objectForKey:kGROAuthAccessTokenSecret]];
+}
+
++ (NSString *)XMLResponseForOAuthPath:(NSString *)path
+                           parameters:(NSDictionary *)parameters
+                           HTTPmethod:(NSString *)method
+                           oauthToken:(NSString *)oauth_token
+                          oauthSecret:(NSString *)oauth_token_secret {
+    
+    // Get the request from our other method and then use the helper method to get the XML
+    NSURLRequest *request = [GROAuth goodreadsRequestForOAuthPath:path parameters:parameters HTTPmethod:method oauthToken:oauth_token oauthSecret:oauth_token_secret];
+    return [GROAuth getDataFromRequest:request];
+}
+
++ (NSDictionary *)dictionaryResponseForOAuthPath:(NSString *)path
+                                      parameters:(NSDictionary *)parameters
+                                      HTTPmethod:(NSString *)method {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSDictionary *GROAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
+    
+    // Pass this on with the stored access token and secret
+    return [GROAuth dictionaryResponseForOAuthPath:path parameters:parameters HTTPmethod:method oauthToken:[GROAuthDefaults objectForKey:kGROAuthAccessToken] oauthSecret:[GROAuthDefaults objectForKey:kGROAuthAccessTokenSecret]];
+}
+
++ (NSDictionary *)dictionaryResponseForOAuthPath:(NSString *)path
+                                      parameters:(NSDictionary *)parameters
+                                      HTTPmethod:(NSString *)method
+                                      oauthToken:(NSString *)oauth_token
+                                     oauthSecret:(NSString *)oauth_token_secret {
+    // Just use XMLDictionary to convert the XMLString into a dictionary
+    return [NSDictionary dictionaryWithXMLString:[GROAuth XMLResponseForOAuthPath:path parameters:parameters HTTPmethod:method oauthToken:oauth_token oauthSecret:oauth_token_secret]];
+}
+
+#pragma mark --Non OAuth methods--
 + (NSString *)XMLResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters {
+    
+    // If the path doesn't require OAuth, just request the path with the appropriate parameters and return
+    // the XML that's returned
+    // Note: assumes all non-oauth requests are GET requests
     path = [NSString stringWithFormat:@"%@%@?", API_URL,path];
     NSMutableString *url = [path mutableCopy];
     for (NSString *key in [parameters allKeys]) {
         NSString *param = [NSString stringWithFormat:@"&%@=%@",key,[parameters objectForKey:key]];
         [url appendString:param];
     }
-    return [GROAuth getDataFrom:url];
+    return [GROAuth getDataFromURL:url];
 }
 
 + (NSDictionary *)dictionaryResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters {
     return [NSDictionary dictionaryWithXMLString:[GROAuth XMLResponseForNonOAuthPath:path parameters:parameters]];
 }
-
-+ (NSString *)getDataFrom:(NSString *)url {
+            
+#pragma mark --Private Helper Methods--
++ (NSString *)getDataFromURL:(NSString *)url {
+    
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setHTTPMethod:@"GET"];
     
     [request setURL:[NSURL URLWithString:url]];
-    
+    return [GROAuth getDataFromRequest:request];
+}
+
+// Helper function for drawing data out of a 
++ (NSString *)getDataFromRequest:(NSURLRequest *)request {
     NSError *error = [[NSError alloc] init];
     NSHTTPURLResponse *responseCode = nil;
     
     NSData *oResponseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseCode error:&error];
     
     if([responseCode statusCode] != 200){
-        NSLog(@"Error getting %@, HTTP status code %i", url, [responseCode statusCode]);
+        NSLog(@"Error getting %@, HTTP status code %i", [[request URL] absoluteString], [responseCode statusCode]);
         return nil;
     }
     
