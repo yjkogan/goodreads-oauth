@@ -31,10 +31,6 @@
                                oauthToken:(NSString *)oauth_token
                               oauthSecret:(NSString *)oauth_token_secret;
 
-+ (NSString *)XMLResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters;
-
-+ (NSDictionary *)dictionaryResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters;
-
 + (NSString *)XMLResponseForOAuthPath:(NSString *)path
                       parameters:(NSDictionary *)parameters
                       HTTPmethod:(NSString *)method;
@@ -54,4 +50,8 @@
                                  HTTPmethod:(NSString *)method
                                  oauthToken:(NSString *)oauth_token
                                 oauthSecret:(NSString *)oauth_token_secret;
+
++ (NSString *)XMLResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters;
+
++ (NSDictionary *)dictionaryResponseForNonOAuthPath:(NSString *)path parameters:(NSDictionary *)parameters;
 @end
