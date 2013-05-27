@@ -90,6 +90,14 @@
     [oauth1Controller loginWithWebView:loginWebView
                             completion:^(NSDictionary *oauthTokens, NSError *error) {
                                 
+                                if (error) {
+                                    [loginWebView removeFromSuperview];
+                                    if (completion != nil) {
+                                        return completion(nil,error);
+                                    }
+                                    return;
+                                }
+                                
                                 // Save the access tokens so we can use it as a default later if we wish to
                                 // We need to make a mutable copy because all objects returned from
                                 // NSUserDefaults are immutable
@@ -105,7 +113,7 @@
                                 // something on a nil C-like
                                 // object causes a crash
                                 if (completion != nil) {
-                                    return completion(oauthTokens,error);
+                                    return completion(oauthTokens,nil);
                                 }
                                 return;
                             }];

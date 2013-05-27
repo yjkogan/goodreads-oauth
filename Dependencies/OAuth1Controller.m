@@ -267,7 +267,7 @@ static inline NSDictionary *CHParametersFromQueryString(NSString *queryString)
     [request setValue:[NSString stringWithFormat:@"%@/%@ (%@; iOS %@; Scale/%0.2f)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleExecutableKey] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], (__bridge id)CFBundleGetValueForInfoDictionaryKey(CFBundleGetMainBundle(), kCFBundleVersionKey) ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion], ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0f)] forHTTPHeaderField:@"User-Agent"];
     
     _delegateHandler = ^(NSDictionary *oauthParams) {
-        if (oauthParams[@"oauth_token"] == nil) {
+        if (oauthParams[@"oauth_token"] == nil || [oauthParams[@"authorize"] isEqualToString:@"0"]) {
             NSError *authenticateError = [NSError errorWithDomain:@"com.ideaflasher.oauth.authenticate" code:0 userInfo:@{@"userInfo" : @"oauth_token not received and/or user denied access"}];
             completion(authenticateError, oauthParams);
         } else {
@@ -293,13 +293,19 @@ static inline NSDictionary *CHParametersFromQueryString(NSString *queryString)
     // Added this delegate call so that we can (maybe) gracefully handle if the user is already signed in
     // --Yonatan Kogan 5/27/2013
     [self.controllerDelegate startedLoadingRequest:request oauth1Controller:self];
+    
     if (_delegateHandler) {
+        
         // For other Oauth 1.0a service providers than LinkedIn, the call back URL might be part of the query of the URL (after the "?"). In this case use index 1 below. In any case NSLog the request URL after the user taps 'Allow'/'Authenticate' after he/she entered his/her username and password and see where in the URL the call back is. Note for some services the callback URL is set once on their website when registering an app, and the self.oauthCallback set here is ignored.
         NSString *urlWithoutQueryString = [request.URL.absoluteString componentsSeparatedByString:@"?"][0];
         if (!self.oauthCallback) {
             return YES;
         }
-        if ([urlWithoutQueryString rangeOfString:self.oauthCallback].location != NSNotFound)
+        // The second part of this AND statement is needed for "login with facebook functionality"
+        // otherwise, the conditional evaluates to true when the facebook page redirects to goodreads but
+        // the user hasn't yet authorized or not authorized
+        if ([urlWithoutQueryString rangeOfString:self.oauthCallback].location != NSNotFound
+            && [urlWithoutQueryString rangeOfString:@"/user/new"].location == NSNotFound)
         {
             NSString *queryString = [request.URL.absoluteString substringFromIndex:[request.URL.absoluteString rangeOfString:@"?"].location + 1];
             NSDictionary *parameters = CHParametersFromQueryString(queryString);
