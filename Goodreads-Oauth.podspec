@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary      = "Library for making OAuth with Goodreads from iOS Easier."
   s.homepage     = "https://github.com/yjkogan/goodreads-oauth"
 
-  s.license      = 'MIT'
+  s.license      = { :type =>'MIT', :file => 'LICENSE_MIT.txt' }
 
   s.author       = { "Yonatan Kogan" => "yjkogan@gmail.com" }
 
