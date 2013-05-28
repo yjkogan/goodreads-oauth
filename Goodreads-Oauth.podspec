@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Goodreads-Oauth"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "Library for making OAuth with Goodreads from iOS Easier."
   s.homepage     = "https://github.com/yjkogan/goodreads-oauth"
 
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 
   s.author       = { "Yonatan Kogan" => "yjkogan@gmail.com" }
 
-  s.source       = { :git => "https://github.com/yjkogan/goodreads-oauth.git", :tag => "1.0.0" }
+  s.source       = { :git => "https://github.com/yjkogan/goodreads-oauth.git", :tag => "1.0.2" }
 
   s.platform     =  :ios, '6.0'
 
