@@ -31,3 +31,28 @@ There are a number of convenience methods for accessing data from Goodreads. The
 Another thing to be aware of is that the dictionaries returned from calls that return an NSDictionary are a bit of a pain to use. If anyone has suggestions for a better library than <https://github.com/nicklockwood/XMLDictionary>, please let me know.
 ###Queries that don't require OAuth
 Sending OAuth signed queries to API paths that don't require OAuth return an html document rather than an XML one, so these extra methods are necessary. If the request requires your key as a parameter (they probably all do, but I haven't checked yet), you can easily get it with `[GROAuth consumerKey]`. The same qualification is true as with OAuth queries regarding NSDictionaries you get back.
+
+#License
+Goodreads-OAuth is licensed under the MIT License
+
+The MIT License (MIT)
+
+Copyright (c) 2013 Yonatan Kogan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
