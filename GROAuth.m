@@ -39,9 +39,19 @@
     // Store the consumer key and consumer secret
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    NSDictionary *goodreadsOAuthDefaults = [NSDictionary dictionaryWithObjectsAndKeys:consumerKey, kGROAuthConsumerKey,consumerSecret, kGROAuthConsumerSecret, nil];
+    // If the dictionary already exists, use it
+    NSDictionary *goodreadsOAuthDefaults = [defaults objectForKey:kGROAuthDefaults];
+    // Otherwise alloc a new one
+    if (!goodreadsOAuthDefaults) {
+        goodreadsOAuthDefaults = [[NSDictionary alloc] init];
+    }
     
-    [defaults setObject:goodreadsOAuthDefaults forKey:kGROAuthDefaults];
+    // Set the consumer key info
+    NSMutableDictionary *mutableGoodreadsOAuthDefaults = [goodreadsOAuthDefaults mutableCopy];
+    [mutableGoodreadsOAuthDefaults setObject:consumerKey forKey:kGROAuthConsumerKey];
+    [mutableGoodreadsOAuthDefaults setObject:consumerSecret forKey:kGROAuthConsumerSecret];
+    
+    [defaults setObject:mutableGoodreadsOAuthDefaults forKey:kGROAuthDefaults];
     
     // For good measure
     [defaults synchronize];
