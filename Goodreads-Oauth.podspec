@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Goodreads-Oauth"
-  s.version      = "1.0.4-beta"
+  s.version      = "0.0.5"
   s.summary      = "Library for making OAuth with Goodreads from iOS Easier."
   s.homepage     = "https://github.com/yjkogan/goodreads-oauth"
 
