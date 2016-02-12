@@ -15,7 +15,7 @@ The underlying OAuth library is that of Christian Hansen and is available at <ht
 4. Optionally (but recommended), you can choose to "Copy items to destination group's folder (if needed)".
 5. Click "Finish"
 
-##Installation using Cocoapods
+##Installation using CocoaPods
 1. Follow the instructions at <http://cocoapods.org/>
 2. Include the Dependency `pod 'Goodreads-Oauth', :git => 'https://github.com/yjkogan/goodreads-oauth.git'`
 
